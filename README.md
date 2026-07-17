@@ -1,6 +1,6 @@
 # 👿 ScreenDemons
 
-**ScreenDemons** is a multiplayer screen time battling app. It leverages Apple's strict **Family Controls (Screen Time) API** to let users challenge their friends to stay off their phones. Break the rules, and the demons win.
+**ScreenDemons** is a multiplayer screen time battling app. It leverages Apple's strict **Family Controls (Screen Time) API** (even for android) to let users challenge their friends to stay off their phones. Break the rules, and the demons win.
 
 ## 🚀 The Core Concept
 Traditional screen time apps rely on single-player guilt. ScreenDemons introduces **social accountability**. 
