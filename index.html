@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScreenDemons</title>
+    <style>
+        :root {
+            --bg: #09090b;
+            --text: #fafafa;
+            --accent: #ef4444;
+            --muted: #a1a1aa;
+            --input-bg: #18181b;
+            --border: #27272a;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+        }
+        h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            margin: 0;
+            background: linear-gradient(135deg, #fff 0%, #a1a1aa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .subtitle {
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
+            color: var(--muted);
+            max-width: 600px;
+            margin: 1.5rem 0 3rem;
+            line-height: 1.5;
+        }
+        .waitlist-form {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        input[type="email"] {
+            flex: 1;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input[type="email"]:focus {
+            border-color: var(--muted);
+        }
+        button {
+            background: var(--text);
+            color: var(--bg);
+            border: none;
+            padding: 0 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.1s ease, opacity 0.2s ease;
+        }
+        button:hover {
+            transform: scale(1.02);
+            opacity: 0.9;
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+        .status {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--muted);
+            min-height: 1.2em;
+        }
+        .success { color: #22c55e; }
+        .error { color: var(--accent); }
+        footer {
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+        }
+        footer a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+        footer a:hover {
+            color: var(--text);
+        }
+        @media (max-width: 480px) {
+            .waitlist-form { flex-direction: column; }
+            button { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>ScreenDemons</h1>
+        <p class="subtitle">Reduce your screen time through social accountability. Challenge your friends, build streaks, and reclaim your focus altogether.</p>
+        
+        <form class="waitlist-form" id="waitlistForm" action="https://formspree.io/f/xdaqeeel" method="POST">
+            <input type="email" name="email" id="emailInput" placeholder="Enter your email address" required autocomplete="email">
+            <button type="submit" id="submitBtn">Join Waitlist</button>
+        </form>
+        <div class="status" id="statusMsg"></div>
+
+    </main>
+    <footer>
+        <a href="/privacy-policy/">Privacy Policy</a>
+    </footer>
+
+    <script>
+        const form = document.getElementById('waitlistForm');
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const status = document.getElementById('statusMsg');
+            
+            btn.disabled = true;
+            btn.innerText = 'Joining...';
+            status.className = 'status';
+            status.innerText = '';
+
+            try {
+                const response = await fetch(form.action, {
+                    method: form.method,
+                    body: new FormData(form),
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    status.className = 'status success';
+                    status.innerText = 'Added to the waitlist! We will be in touch.';
+                    form.reset();
+                } else {
+                    const data = await response.json();
+                    if (Object.hasOwn(data, 'errors')) {
+                        status.innerText = data.errors.map(err => err.message).join(', ');
+                    } else {
+                        status.innerText = 'Oops! There was a problem submitting your form';
+                    }
+                    status.className = 'status error';
+                }
+            } catch (error) {
+                status.className = 'status error';
+                status.innerText = 'Oops! There was a problem submitting your form';
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Join Waitlist';
+            }
+        });
+    </script>
+</body>
+</html>
